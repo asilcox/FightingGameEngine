@@ -1,0 +1,27 @@
+text
+# ===============
+# Build Artifacts
+# ===============
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+binstar/
+obj/
+bin/
+
+# =========================
+# Visual Studio Local Files
+# =========================
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# =========================
+# Package Manager Directory
+# =========================
+packages/
+*.nuget.props
+*.nuget.targets
