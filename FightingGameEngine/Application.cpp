@@ -2,7 +2,8 @@
 
 Application::Application()
 	:
-	window(1280, 720, "Fighting Game Engine")
+	window(1280, 720, "Fighting Game Engine"),
+	renderManager(window.GetHWND())
 {
 
 }
@@ -25,5 +26,6 @@ int Application::Run()
 
 void Application::DrawFrame()
 {
-
+	renderManager.ClearBuffer(0.0f, 0.1f, 0.2f);
+	renderManager.EndFrame();
 }
