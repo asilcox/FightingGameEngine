@@ -134,6 +134,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h" />
+    <ClInclude Include="EngineMath.h" />
     <ClInclude Include="RenderManager.h" />
     <ClInclude Include="Window.h" />
   </ItemGroup>
