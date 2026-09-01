@@ -27,5 +27,6 @@ int Application::Run()
 void Application::DrawFrame()
 {
 	renderManager.ClearBuffer(0.0f, 0.1f, 0.2f);
+	renderManager.DrawTriangle();
 	renderManager.EndFrame();
 }
