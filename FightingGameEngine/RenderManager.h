@@ -12,7 +12,7 @@ public:
 	~RenderManager();
 	void EndFrame();
 	void ClearBuffer(float r, float g, float b);
-	void DrawTriangle();
+	void DrawCube(float angle);
 private:
 	ID3D11Device* pDevice = nullptr;
 	IDXGISwapChain* pSwap = nullptr;

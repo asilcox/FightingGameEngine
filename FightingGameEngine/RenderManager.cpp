@@ -93,18 +93,55 @@ void RenderManager::ClearBuffer(float r, float g, float b)
 	pContext->ClearDepthStencilView(pDepth, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
-void RenderManager::DrawTriangle()
+void RenderManager::DrawCube(float angle)
 {
 	std::vector<Vertex> vertices =
 	{
-		{ { -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f } },
-		{ { 0.0f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f } },
-		{ { 0.5f, -0.5f, 0.0f }, { 0.0f, 0.0f, 1.0f } }
+		// Top
+		{ { -1.0f, 1.0f, -1.0f }, { 0.0f, 1.0f, 0.0f } }, // 0
+		{ { -1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } }, // 1
+		{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 1.0f, 0.0f } }, // 2
+		{ { 1.0f, 1.0f, -1.0f }, { 0.0f, 1.0f, 0.0f } }, // 3
+
+		// Bottom
+		{ { -1.0f, -1.0f, 1.0f }, { 0.0f, -1.0f, 0.0f } }, // 4
+		{ { -1.0f, -1.0f, -1.0f }, { 0.0f, -1.0f, 0.0f } }, // 5
+		{ { 1.0f, -1.0f, -1.0f }, { 0.0f, -1.0f, 0.0f } }, // 6
+		{ { 1.0f, -1.0f, 1.0f }, { 0.0f, -1.0f, 0.0f } }, // 7
+
+		// Left
+		{ { -1.0f, -1.0f, 1.0f }, { -1.0f, 0.0f, 0.0f } }, // 8
+		{ { -1.0f, 1.0f, 1.0f }, { -1.0f, 0.0f, 0.0f } }, // 9
+		{ { -1.0f, 1.0f, -1.0f }, { -1.0f, 0.0f, 0.0f } }, // 10
+		{ { -1.0f, -1.0f, -1.0f }, { -1.0f, 0.0f, 0.0f } }, // 11
+
+		// Right
+		{ { 1.0f, -1.0f, -1.0f }, { 1.0f, 0.0f, 0.0f } }, // 12
+		{ { 1.0f, 1.0f, -1.0f }, { 1.0f, 0.0f, 0.0f } }, // 13
+		{ { 1.0f, 1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f } }, // 14
+		{ { 1.0f, -1.0f, 1.0f }, { 1.0f, 0.0f, 0.0f } }, // 15
+
+		// Front
+		{ { -1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f } }, // 16
+		{ { -1.0f, 1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f } }, // 17
+		{ { 1.0f, 1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f } }, // 18
+		{ { 1.0f, -1.0f, -1.0f }, { 0.0f, 0.0f, -1.0f } }, // 19
+
+		// Back
+		{ { 1.0f, -1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }, // 20
+		{ { 1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }, // 21
+		{ { -1.0f, 1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } }, // 22
+		{ { -1.0f, -1.0f, 1.0f }, { 0.0f, 0.0f, 1.0f } } // 23
 	};
 
 	std::vector<unsigned short> indices =
 	{
-		0, 1, 2
+		0, 1, 2,  0, 2, 3,
+		4, 5, 6,  4, 6, 7,
+		8, 9, 10,  8, 10, 11,
+		12, 13, 14,  12, 14, 15,
+		16, 17, 18,  16, 18, 19,
+		20, 21, 22,  20, 22, 23
 	};
 
 	ID3D11Buffer* pVertexBuffer;
@@ -139,6 +176,38 @@ void RenderManager::DrawTriangle()
 	pContext->IASetIndexBuffer(pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
 	pIndexBuffer->Release();
 
+	WorldViewProj matrices;
+
+	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+	world = DirectX::XMMatrixMultiply(world, DirectX::XMMatrixRotationX(angle));
+	world = DirectX::XMMatrixMultiply(world, DirectX::XMMatrixRotationY(angle));
+	world = DirectX::XMMatrixMultiply(world, DirectX::XMMatrixRotationZ(angle));
+	world = DirectX::XMMatrixMultiply(world, DirectX::XMMatrixScaling(1.0f, 1.0f, 1.0f));
+	world = DirectX::XMMatrixMultiply(world, DirectX::XMMatrixTranslation(0.0f, 0.0f, 5.0f));
+	DirectX::XMStoreFloat4x4(&matrices.wMatrix, world);
+
+	DirectX::XMMATRIX view =
+		DirectX::XMMatrixLookAtLH({ 0.0f, 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f, 0.0f }, { 0.0f, 1.0f, 0.0f, 0.0f });
+	DirectX::XMStoreFloat4x4(&matrices.vMatrix, view);
+
+	DirectX::XMMATRIX projection = DirectX::XMMatrixPerspectiveFovLH(1.0f, 1280.0f / 720.0f, 0.5f, 100.0f);
+	DirectX::XMStoreFloat4x4(&matrices.pMatrix, projection);
+
+	ID3D11Buffer* pConstantBuffer;
+	D3D11_BUFFER_DESC cbd;
+	cbd.ByteWidth = sizeof(matrices);
+	cbd.Usage = D3D11_USAGE_DYNAMIC;
+	cbd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbd.MiscFlags = 0;
+	cbd.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA csd = {};
+	csd.pSysMem = &matrices;
+	pDevice->CreateBuffer(&cbd, &csd, &pConstantBuffer);
+
+	pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
+	pConstantBuffer->Release();
+
 	ID3D11VertexShader* pVertexShader;
 	ID3DBlob* pVSBlob;
 	D3DReadFileToBlob(L"VertexShader.cso", &pVSBlob);
@@ -163,7 +232,8 @@ void RenderManager::DrawTriangle()
 	const std::vector<D3D11_INPUT_ELEMENT_DESC> input =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 	};
 
 	pDevice->CreateInputLayout(
