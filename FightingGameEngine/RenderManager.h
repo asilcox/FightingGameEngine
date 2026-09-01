@@ -2,6 +2,8 @@
 #include <d3d11.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <vector>
+#include "EngineMath.h"
 
 class RenderManager
 {
@@ -10,6 +12,7 @@ public:
 	~RenderManager();
 	void EndFrame();
 	void ClearBuffer(float r, float g, float b);
+	void DrawTriangle();
 private:
 	ID3D11Device* pDevice = nullptr;
 	IDXGISwapChain* pSwap = nullptr;
