@@ -1,4 +1,4 @@
-#include <Windows.h>
+#include "Window.h"
 
 int CALLBACK WinMain(
 	_In_     HINSTANCE hInstance, 
@@ -6,5 +6,11 @@ int CALLBACK WinMain(
 	_In_     LPSTR     lpCmdLine, 
 	_In_     int       nShowCmd)
 {
+	Window window(1280, 720, "Fighting Game Engine");
 
+	while (true)
+	{
+		if (const auto msgCode = Window::ProcessMessages())
+			return *msgCode;
+	}
 }
