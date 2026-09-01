@@ -26,7 +26,9 @@ int Application::Run()
 
 void Application::DrawFrame()
 {
+	cubeRot += 0.01f;
+
 	renderManager.ClearBuffer(0.0f, 0.1f, 0.2f);
-	renderManager.DrawTriangle();
+	renderManager.DrawCube(cubeRot);
 	renderManager.EndFrame();
 }
