@@ -232,6 +232,9 @@ void RenderManager::DrawCube(float angle)
 	csdLight.pSysMem = &dLight;
 	pDevice->CreateBuffer(&cbdLight, &csdLight, &pLightConstantBuffer);
 
+	pContext->PSSetConstantBuffers(0, 1, &pLightConstantBuffer);
+	pLightConstantBuffer->Release();
+
 	ID3D11VertexShader* pVertexShader;
 	ID3DBlob* pVSBlob;
 	D3DReadFileToBlob(L"VertexShader.cso", &pVSBlob);
