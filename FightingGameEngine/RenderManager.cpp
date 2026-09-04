@@ -208,6 +208,30 @@ void RenderManager::DrawCube(float angle)
 	pContext->VSSetConstantBuffers(0, 1, &pConstantBuffer);
 	pConstantBuffer->Release();
 
+	DirectionalLightCBuf dLight =
+	{
+		{ 0.0f, 0.0f, 1.0f },
+		{ 0.0f, 0.0f, 0.0f },
+		{ 0.05f, 0.05f, 0.05f },
+		{ 1.0f, 1.0f, 1.0f },
+		0.7f,
+		1.0f,
+		0.045f,
+		0.0075f
+	};
+
+	ID3D11Buffer* pLightConstantBuffer;
+	D3D11_BUFFER_DESC cbdLight;
+	cbdLight.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbdLight.Usage = D3D11_USAGE_DYNAMIC;
+	cbdLight.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	cbdLight.MiscFlags = 0;
+	cbdLight.ByteWidth = sizeof(dLight);
+	cbdLight.StructureByteStride = 0;
+	D3D11_SUBRESOURCE_DATA csdLight = {};
+	csdLight.pSysMem = &dLight;
+	pDevice->CreateBuffer(&cbdLight, &csdLight, &pLightConstantBuffer);
+
 	ID3D11VertexShader* pVertexShader;
 	ID3DBlob* pVSBlob;
 	D3DReadFileToBlob(L"VertexShader.cso", &pVSBlob);
