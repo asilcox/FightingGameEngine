@@ -7,10 +7,10 @@ cbuffer cBuf
 
 struct OutputVertex
 {
-    float2 tex : TEXCOORD;
     float3 worldPos : POSITION;
     float3 normal : NORMAL;
     float4 pos : SV_POSITION;
+    float2 tex : TEXCOORD;
 };
 
 OutputVertex main(float3 pos : POSITION, float3 n : NORMAL, float2 tex : TEXCOORD)
